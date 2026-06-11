@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio professionnel — Étudiant en informatique">
+  <title>Malek — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       THÈME & RESET
+       ============================================================ */
+    :root {
+      --bg: #0f1117;
+      --bg-deep: #0a0c10;
+      --card: #1a1d27;
+      --card-hover: #20242f;
+      --accent: #7c3aed;
+      --accent-light: #a78bfa;
+      --accent-2: #d946ef;
+      --accent-3: #22d3ee;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #2a2f3d;
+      --radius: 16px;
+      --glow: 0 0 40px rgba(124, 58, 237, 0.35);
+      --font-display: "Sora", "Avenir Next", system-ui, sans-serif;
+      --font-body: "Manrope", "Segoe UI", system-ui, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 500;
+      line-height: 1.75;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, .btn, .nav-logo, .nav-links a {
+      font-family: var(--font-display);
+    }
+
+    body.loading, body.no-scroll { overflow: hidden; }
+
+    /* Grille décorative en fond */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124, 58, 237, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124, 58, 237, 0.04) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 40%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 40%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Texture grain subtile */
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.55"/></svg>');
+      opacity: 0.035;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    a { color: var(--accent-light); text-decoration: none; }
+
+    ::selection { background: rgba(124, 58, 237, 0.45); color: #fff; }
+
+    #particles {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    #cursorGlow {
+      position: fixed;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.13), transparent 65%);
+      pointer-events: none;
+      z-index: 1;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.4s;
+      opacity: 0;
+    }
+
+    main, header, nav, footer { position: relative; z-index: 2; }
+
+    section { padding: 110px 24px; max-width: 1140px; margin: 0 auto; }
+
+    /* ============================================================
+       PRELOADER
+       ============================================================ */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: var(--bg-deep);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 26px;
+      transition: transform 0.65s cubic-bezier(0.76, 0, 0.24, 1), opacity 0.5s;
+      cursor: pointer;
+    }
+
+    #preloader.done { transform: translateY(-100%); opacity: 0.4; }
+
+    .loader-name {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 8vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      background: linear-gradient(120deg, #fff, var(--accent-light), var(--accent-2), #fff);
+      background-size: 300% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 2.4s linear infinite;
+    }
+
+    .loader-bar {
+      width: min(280px, 60vw);
+      height: 4px;
+      border-radius: 4px;
+      background: var(--card);
+      overflow: hidden;
+    }
+
+    .loader-bar-fill {
+      height: 100%;
+      width: 0;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+      box-shadow: 0 0 14px rgba(124, 58, 237, 0.8);
+    }
+
+    .loader-pct {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+    }
+
+    /* ============================================================
+       CURSEUR CUSTOM
+       ============================================================ */
+    body.custom-cursor, body.custom-cursor a, body.custom-cursor button { cursor: none; }
+
+    .cursor-dot, .cursor-ring {
+      position: fixed;
+      top: 0; left: 0;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 500;
+      transform: translate(-50%, -50%);
+    }
+
+    .cursor-dot {
+      width: 7px; height: 7px;
+      background: var(--accent-light);
+      box-shadow: 0 0 10px rgba(167, 139, 250, 0.9);
+    }
+
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid rgba(167, 139, 250, 0.65);
+      transition: width 0.25s, height 0.25s, border-color 0.25s, background 0.25s;
+    }
+
+    .cursor-ring.hovering {
+      width: 58px; height: 58px;
+      border-color: var(--accent-2);
+      background: rgba(124, 58, 237, 0.1);
+    }
+
+    .cursor-dot.hidden, .cursor-ring.hidden { opacity: 0; }
+
+    /* ============================================================
+       ÉTINCELLES & MODE FÊTE
+       ============================================================ */
+    .spark {
+      position: fixed;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 600;
+    }
+
+    body.party .orb,
+    body.party #particles,
+    body.party .btn-primary,
+    body.party .section-title,
+    body.party .hero h1 span {
+      animation: hueParty 2.5s linear infinite !important;
+    }
+
+    @keyframes hueParty { to { filter: hue-rotate(360deg); } }
+
+    /* ============================================================
+       BARRE DE PROGRESSION DE SCROLL
+       ============================================================ */
+    #scrollProgress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+      z-index: 200;
+      box-shadow: 0 0 12px rgba(124, 58, 237, 0.8);
+    }
+
+    /* ============================================================
+       TITRES DE SECTION
+       ============================================================ */
+    .section-kicker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      margin-bottom: 14px;
+    }
+
+    .section-kicker::before, .section-kicker::after {
+      content: "";
+      width: 36px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent));
+    }
+
+    .section-kicker::after {
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4.2vw, 2.9rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      text-align: center;
+      background: linear-gradient(120deg, #fff 20%, var(--accent-light) 60%, var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      margin: 14px 0 60px;
+      font-size: 1.02rem;
+    }
+
+    /* ============================================================
+       NAVIGATION
+       ============================================================ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(15, 17, 23, 0.6);
+      backdrop-filter: blur(16px) saturate(1.4);
+      -webkit-backdrop-filter: blur(16px) saturate(1.4);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    nav.scrolled {
+      background: rgba(15, 17, 23, 0.85);
+      border-bottom-color: var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
+    .nav-logo span {
+      background: linear-gradient(120deg, var(--accent-light), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 6px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      position: relative;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); background: rgba(124, 58, 237, 0.12); }
+
+    .nav-links a.active { color: var(--accent-light); }
+
+    .nav-links a.active::after {
+      content: "";
+      position: absolute;
+      left: 14px; right: 14px; bottom: 2px;
+      height: 2px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    .nav-burger {
+      display: none;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 1.3rem;
+      width: 42px;
+      height: 42px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .nav-burger:hover { border-color: var(--accent); }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 100px 24px 60px;
+      position: relative;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.5;
+      pointer-events: none;
+      animation: float 14s ease-in-out infinite;
+    }
+
+    .orb-1 { width: 420px; height: 420px; background: rgba(124, 58, 237, 0.35); top: 6%; left: -8%; }
+    .orb-2 { width: 340px; height: 340px; background: rgba(217, 70, 239, 0.22); bottom: 10%; right: -6%; animation-delay: -5s; }
+    .orb-3 { width: 240px; height: 240px; background: rgba(34, 211, 238, 0.15); top: 45%; left: 65%; animation-delay: -9s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33%      { transform: translate(30px, -40px) scale(1.08); }
+      66%      { transform: translate(-25px, 25px) scale(0.95); }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-light);
+      background: rgba(124, 58, 237, 0.12);
+      border: 1px solid rgba(124, 58, 237, 0.35);
+      padding: 7px 18px;
+      border-radius: 999px;
+      margin-bottom: 30px;
+      backdrop-filter: blur(8px);
+    }
+
+    .hero-badge .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 10px #34d399;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero-photo {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent);
+      box-shadow: var(--glow);
+      margin-bottom: 30px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.8rem, 8vw, 5.4rem);
+      font-weight: 800;
+      letter-spacing: -2.5px;
+      line-height: 1.06;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(120deg, var(--accent-light), var(--accent-2), var(--accent-3), var(--accent-light));
+      background-size: 280% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 7s linear infinite;
+    }
+
+    @keyframes gradientShift {
+      to { background-position: 280% center; }
+    }
+
+    .hero-typed {
+      font-family: var(--font-display);
+      font-size: clamp(1.05rem, 2.8vw, 1.5rem);
+      font-weight: 600;
+      color: var(--accent-light);
+      letter-spacing: -0.3px;
+      margin: 26px 0 24px;
+      min-height: 1.8em;
+    }
+
+    .hero-typed .cursor {
+      display: inline-block;
+      width: 3px;
+      margin-left: 3px;
+      background: var(--accent-2);
+      animation: blink 0.9s step-end infinite;
+      border-radius: 2px;
+    }
+
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hero p {
+      max-width: 660px;
+      color: var(--text-muted);
+      font-size: 1.08rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 13px 30px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.25s, box-shadow 0.25s, background 0.25s, border-color 0.25s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      background-size: 160% auto;
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(124, 58, 237, 0.35);
+    }
+
+    .btn-primary:hover {
+      background-position: right center;
+      box-shadow: 0 10px 36px rgba(124, 58, 237, 0.55);
+    }
+
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: rgba(26, 29, 39, 0.7);
+      backdrop-filter: blur(8px);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      box-shadow: 0 8px 26px rgba(124, 58, 237, 0.25);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translate(-50%, 0); opacity: 0.5; }
+      50%      { transform: translate(-50%, 10px); opacity: 1; }
+    }
+
+    /* ============================================================
+       COMPÉTENCES — DOUBLE MARQUEE INFINI
+       ============================================================ */
+    .marquee {
+      overflow: hidden;
+      padding: 10px 0;
+      mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+    }
+
+    .marquee + .marquee { margin-top: 18px; }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: scrollX var(--speed, 30s) linear infinite;
+    }
+
+    .marquee:hover .marquee-track { animation-play-state: paused; }
+
+    .marquee-track.reverse { animation-direction: reverse; }
+
+    @keyframes scrollX { to { transform: translateX(-50%); } }
+
+    .skill-badge {
+      flex-shrink: 0;
+      margin-right: 18px;
+      padding: 12px 28px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.96rem;
+      font-family: var(--font-display);
+      border: 1px solid;
+      cursor: default;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .skill-badge:hover {
+      transform: translateY(-4px) scale(1.06);
+    }
+
+    /* ============================================================
+       PROJETS — CARTES
+       ============================================================ */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 30px;
+      perspective: 1200px;
+    }
+
+    .project-card {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.2s ease-out, border-color 0.3s, box-shadow 0.3s, background 0.3s;
+      will-change: transform;
+    }
+
+    .project-card:hover, .project-card:focus-visible {
+      border-color: rgba(124, 58, 237, 0.6);
+      background: var(--card-hover);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), var(--glow);
+      outline: none;
+    }
+
+    .project-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(167, 139, 250, 0.08) 50%, transparent 60%);
+      transform: translateX(-120%);
+      transition: transform 0.7s ease;
+      pointer-events: none;
+    }
+
+    .project-card:hover::after { transform: translateX(120%); }
+
+    .project-visual {
+      height: 190px;
+      width: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .project-card:hover .project-visual { transform: scale(1.06); }
+
+    .project-icon {
+      height: 190px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(124, 58, 237, 0.22), transparent 55%),
+        radial-gradient(circle at 75% 80%, rgba(217, 70, 239, 0.12), transparent 50%),
+        var(--bg-deep);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .project-icon svg {
+      width: 72px;
+      height: 72px;
+      stroke: var(--accent-light);
+      filter: drop-shadow(0 0 14px rgba(124, 58, 237, 0.55));
+      transition: transform 0.4s ease;
+    }
+
+    .project-card:hover .project-icon svg { transform: scale(1.12) rotate(-3deg); }
+
+    .project-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 13px;
+    }
+
+    .project-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .project-title { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.4px; }
+
+    .type-badge {
+      font-size: 0.68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      padding: 5px 13px;
+      border-radius: 999px;
+      border: 1px solid;
+    }
+
+    .project-desc {
+      color: var(--text-muted);
+      font-size: 0.94rem;
+      flex: 1;
+    }
+
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .tech-tag {
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 13px;
+      border-radius: 999px;
+      background: rgba(124, 58, 237, 0.12);
+      color: var(--accent-light);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .tech-tag:hover { background: rgba(124, 58, 237, 0.25); border-color: var(--accent); }
+
+    .card-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--accent-light);
+      margin-top: 4px;
+      transition: gap 0.25s;
+    }
+
+    .project-card:hover .card-more { gap: 12px; }
+
+    /* ============================================================
+       PAGE DÉTAIL PROJET
+       ============================================================ */
+    .detail-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      overflow-y: auto;
+      background:
+        radial-gradient(ellipse 70% 40% at 70% 0%, rgba(124, 58, 237, 0.13), transparent),
+        radial-gradient(ellipse 50% 35% at 10% 100%, rgba(217, 70, 239, 0.07), transparent),
+        var(--bg);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .detail-overlay.open { opacity: 1; }
+    .detail-overlay[hidden] { display: none; }
+
+    .detail-close {
+      position: fixed;
+      top: 22px;
+      right: 26px;
+      z-index: 160;
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(26, 29, 39, 0.85);
+      backdrop-filter: blur(10px);
+      color: var(--text);
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+
+    .detail-close:hover { border-color: var(--accent); box-shadow: var(--glow); transform: rotate(90deg); }
+
+    .detail-container {
+      max-width: 940px;
+      margin: 0 auto;
+      padding: 90px 24px 90px;
+    }
+
+    .detail-overlay.open .detail-container {
+      animation: rise 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(36px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 34px;
+    }
+
+    .breadcrumb a { color: var(--text-muted); transition: color 0.2s; }
+    .breadcrumb a:hover { color: var(--accent-light); }
+    .breadcrumb .sep { color: var(--accent); }
+    .breadcrumb .current { color: var(--text); font-weight: 700; }
+
+    .detail-banner {
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 38px;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+    }
+
+    .detail-banner img {
+      width: 100%;
+      max-height: 440px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .detail-banner .project-icon { height: 260px; border-bottom: none; }
+    .detail-banner .project-icon svg { width: 96px; height: 96px; }
+
+    .detail-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .detail-head h2 {
+      font-size: clamp(1.9rem, 5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      background: linear-gradient(120deg, #fff 30%, var(--accent-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .detail-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .date-chip {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      background: var(--card);
+      padding: 6px 15px;
+      border-radius: 999px;
+    }
+
+    .detail-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 22px 0 44px;
+    }
+
+    .detail-section { margin-bottom: 44px; }
+
+    .detail-section h3 {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 16px;
+    }
+
+    .detail-section h3::before {
+      content: "";
+      width: 22px;
+      height: 3px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    .detail-section p {
+      color: var(--text-muted);
+      font-size: 1.02rem;
+      margin-bottom: 14px;
+    }
+
+    .features-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+    }
+
+    .features-list li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-weight: 600;
+      font-size: 0.94rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .features-list li:hover { border-color: rgba(124, 58, 237, 0.5); transform: translateX(4px); }
+
+    .features-list li::before {
+      content: "✦";
+      color: var(--accent-light);
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .similar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 22px;
+    }
+
+    .mini-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .mini-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(124, 58, 237, 0.6);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4), 0 0 24px rgba(124, 58, 237, 0.2);
+    }
+
+    .mini-card .project-icon { height: 120px; }
+    .mini-card .project-icon svg { width: 46px; height: 46px; }
+
+    .mini-card img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .mini-body { padding: 16px 18px 18px; }
+
+    .mini-body h4 { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.2px; }
+
+    .mini-body .mini-date {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .mini-body p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin: 4px 0 10px;
+    }
+
+    .mini-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .mini-tags .tech-tag { font-size: 0.7rem; padding: 3px 10px; }
+
+    /* ============================================================
+       CONTACT
+       ============================================================ */
+    .contact-card {
+      position: relative;
+      background: rgba(26, 29, 39, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 60px 36px;
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .contact-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 22px;
+      padding: 1px;
+      background: linear-gradient(120deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent));
+      background-size: 300% auto;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: gradientShift 6s linear infinite;
+      pointer-events: none;
+    }
+
+    .contact-card p { color: var(--text-muted); margin-bottom: 32px; }
+
+    .contact-links {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ============================================================
+       FOOTER & RETOUR EN HAUT
+       ============================================================ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 24px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    footer span { color: var(--accent-light); }
+
+    footer .konami-hint { opacity: 0.4; font-size: 0.75rem; display: block; margin-top: 6px; letter-spacing: 1px; }
+
+    #backToTop {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(26, 29, 39, 0.85);
+      backdrop-filter: blur(10px);
+      color: var(--accent-light);
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity 0.3s, transform 0.3s, border-color 0.2s;
+      z-index: 90;
+    }
+
+    #backToTop.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    #backToTop:hover { border-color: var(--accent); box-shadow: var(--glow); }
+
+    /* ============================================================
+       ANIMATIONS AU SCROLL
+       ============================================================ */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+      transition-delay: var(--stagger, 0s);
+    }
+
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ============================================================
+       ACCESSIBILITÉ — MOUVEMENT RÉDUIT
+       ============================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+      #particles, #cursorGlow, .scroll-hint, #preloader, .cursor-dot, .cursor-ring { display: none; }
+      .fade-in { opacity: 1; transform: none; }
+      .marquee-track { animation: none; flex-wrap: wrap; justify-content: center; row-gap: 14px; width: auto; }
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 760px) {
+      .nav-burger { display: block; }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 68px; left: 0; right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: rgba(15, 17, 23, 0.97);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+        padding: 10px 0;
+      }
+
+      .nav-links.open { display: flex; }
+      .nav-links li { text-align: center; }
+      .nav-links a { display: block; padding: 15px; }
+      .nav-links a.active::after { display: none; }
+
+      section { padding: 80px 18px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .orb { filter: blur(60px); }
+      #cursorGlow, .cursor-dot, .cursor-ring { display: none; }
+      .detail-container { padding-top: 80px; }
+    }
+  </style>
+</head>
+<body class="loading">
+
+  <!-- ========== PRELOADER ========== -->
+  <div id="preloader">
+    <div class="loader-name">Malek</div>
+    <div class="loader-bar"><div class="loader-bar-fill" id="loadFill"></div></div>
+    <div class="loader-pct" id="loadPct">0%</div>
+  </div>
+
+  <canvas id="particles"></canvas>
+  <div id="cursorGlow"></div>
+  <div class="cursor-dot hidden" id="cursorDot"></div>
+  <div class="cursor-ring hidden" id="cursorRing"></div>
+  <div id="scrollProgress"></div>
+
+  <!-- ========== NAVIGATION ========== -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#accueil" class="nav-logo">Malek<span>.</span></a>
+      <button class="nav-burger" id="navBurger" aria-label="Menu">☰</button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#accueil">Accueil</a></li>
+        <li><a href="#competences">Compétences</a></li>
+        <li><a href="#projets">Projets</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <header class="hero" id="accueil">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="hero-badge fade-in"><span class="dot"></span> Disponible pour un projet</div>
+
+    <!-- [PHOTO] Décommenter et renseigner l'URL si tu as une photo :
+    <img class="hero-photo" src="[URL DE TA PHOTO]" alt="Photo de Malek">
+    -->
+
+    <h1 class="fade-in" id="heroName">Malek <span id="scrambleName"></span></h1>
+
+    <div class="hero-typed fade-in"><span id="typedText"></span><span class="cursor">&nbsp;</span></div>
+
+    <p class="fade-in">
+      Étant réellement interessé par les domaines de l'informatique et du développement, j'ai décidé de me lancer dans la création de ce portfolio afin de partager mes projets et compétences.
+    </p>
+
+    <div class="hero-actions fade-in">
+      <a class="btn btn-primary magnetic" href="[LIEN GITHUB]" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.15c-3.2.7-3.87-1.36-3.87-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.34.96.1-.74.4-1.25.72-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.73.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.05.77 2.12v3.14c0 .3.21.67.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+        GitHub
+      </a>
+      <a class="btn btn-outline magnetic" href="[LIEN LINKEDIN]" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+        LinkedIn
+      </a>
+    </div>
+
+    <a class="scroll-hint" href="#competences" aria-label="Défiler vers le bas">⌄</a>
+  </header>
+
+  <main>
+    <!-- ========== COMPÉTENCES ========== -->
+    <section id="competences">
+      <span class="section-kicker fade-in">Stack</span>
+      <h2 class="section-title fade-in">Compétences</h2>
+      <p class="section-subtitle fade-in">Les technologies et outils que je maîtrise</p>
+      <div class="fade-in" id="skillsZone"></div>
+    </section>
+
+    <!-- ========== PROJETS ========== -->
+    <section id="projets">
+      <span class="section-kicker fade-in">Réalisations</span>
+      <h2 class="section-title fade-in">Projets</h2>
+      <p class="section-subtitle fade-in">Clique sur un projet pour découvrir tous les détails</p>
+      <div class="projects-grid" id="projectsGrid"></div>
+    </section>
+
+    <!-- ========== CONTACT ========== -->
+    <section id="contact">
+      <span class="section-kicker fade-in">Contact</span>
+      <h2 class="section-title fade-in">Travaillons ensemble</h2>
+      <p class="section-subtitle fade-in">Une question, une opportunité ? Écrivez-moi</p>
+      <div class="contact-card fade-in">
+        <p>Je suis ouvert aux opportunités et échanges professionnels.<br>
+           Réponse garantie sous 24h ⚡</p>
+        <div class="contact-links">
+          <button class="btn btn-primary magnetic" id="emailBtn" data-email="abdelmalek.ahmedmessaoud@ynov.com">📧 MAIL</button>
+          <a class="btn btn-outline magnetic" href="https://github.com/tesskz" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn btn-outline magnetic" href="https://www.linkedin.com/feed/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== PAGE DÉTAIL PROJET ========== -->
+  <div class="detail-overlay" id="detailOverlay" hidden role="dialog" aria-modal="true" aria-label="Détails du projet">
+    <button class="detail-close" id="detailClose" aria-label="Fermer">✕</button>
+    <div class="detail-container" id="detailContent"></div>
+  </div>
+
+  <!-- ========== FOOTER ========== -->
+  <footer>
+    © <span id="year"></span> <span>Malek</span> — Tous droits réservés.<br>
+    <span class="konami-hint">psst… ↑ ↑ ↓ ↓ ← → ← → B A</span>
+  </footer>
+
+  <button id="backToTop" aria-label="Retour en haut">↑</button>
+
+  <script>
+    /* ==============================================================
+       ZONE À PERSONNALISER
+       Remplace les valeurs ci-dessous par tes vraies données.
+       Tout le reste (cartes, pages détail, badges, animations)
+       est généré automatiquement à partir de ces tableaux.
+       ============================================================== */
+
+    // Phrases affichées en machine à écrire sous ton nom
+    const heroTitles = [
+      "[Étudiant en B1 Informatique]",
+      "[Curieux en développement web]",
+    ];
+
+    const skills = [
+      "JavaScript",
+      "Node.js",
+      "Express",
+      "MySQL",
+      "API REST",
+      "HTML / CSS",
+      "Git & GitHub"
+    ];
+
+    /*
+      Pour chaque projet :
+      - type            : "web" | "infrastructure" | "réseau" | "cybersécurité" | "cloud" | "script"
+      - icon            : optionnel, force une icône dédiée ("boutique", "forum", ou un type ci-dessus)
+                          quand il n'y a pas de screenshot ; sinon l'icône suit le type
+      - date            : "AAAA-MM" (affichée sur la page détail)
+      - description     : résumé court affiché sur la carte
+      - longDescription : description complète pour la page détail
+                          (sépare les paragraphes avec une ligne vide "\n\n")
+      - features        : liste des fonctionnalités clés
+      - screenshot      : URL directe vers une image, ou null
+      - github          : URL du dépôt, ou null  → bouton "Voir le code"
+      - demo            : URL de la démo, ou null → bouton "Voir la démo"
+      - doc             : note sur la documentation, ou null
+    */
+    const projects = [
+      {
+        title: "ZAZA Store — Boutique en ligne",
+        type: "web",
+        icon: "boutique",
+        date: "2026-03",
+        description: "Boutique e-commerce full-stack de peluches : catalogue filtrable, panier, favoris, commandes et panneau d'administration, branchés sur une API REST maison.",
+        longDescription: "ZAZA Store est une boutique en ligne complète développée en binôme. Le site permet de parcourir un catalogue de peluches avec des filtres par type, genre et prix, de consulter des fiches produit détaillées (déclinaisons de couleurs, tailles et galerie d'images), puis de gérer son panier, ses favoris et ses commandes depuis son compte.\n\nCôté serveur, l'API REST est construite avec Express et s'appuie sur une base MySQL d'une dizaine de tables : produits et leurs déclinaisons, paniers, adresses de livraison, commandes avec suivi de statut (en attente, payée, expédiée, livrée). L'authentification repose sur des tokens JWT avec mots de passe hachés en bcrypt, et un middleware dédié protège les routes d'administration selon le rôle de l'utilisateur. Un panneau admin permet de gérer le catalogue et les commandes.\n\nJ'ai principalement réalisé le frontend en JavaScript vanilla (pages, filtres, panier, intégration de l'API) ainsi que le contrôleur de gestion des utilisateurs.",
+        features: [
+          "Catalogue avec filtres (type, genre, prix)",
+          "Fiches produit : couleurs, tailles, images",
+          "Panier et favoris par utilisateur",
+          "Commandes avec suivi de statut",
+          "Authentification JWT + rôles user/admin",
+          "Panneau d'administration",
+          "Adresses de livraison"
+        ],
+        technologies: ["JavaScript", "Node.js", "Express", "MySQL", "JWT", "bcrypt", "HTML/CSS"],
+        screenshot: null,
+        github: "https://github.com/nikita-ynov/projet-boutique",
+        demo: null,
+        doc: "Diagramme de la base de données disponible"
+      },
+      {
+        title: "Lounge — Forum communautaire",
+        type: "web",
+        icon: "forum",
+        date: "2026-04",
+        description: "Forum de discussion en cours de développement : architecture MVC complète, base de données modélisée (topics, messages, tags, votes) et serveur Express.",
+        longDescription: "Lounge est un forum communautaire développé en binôme, pensé dès le départ avec une architecture MVC stricte : le frontend est découpé en vues, contrôleurs et modèles, et le backend regroupe le routeur, les contrôleurs et la couche d'accès à la base de données.\n\nLa base MySQL a été entièrement modélisée en amont : utilisateurs avec profils enrichis (photo, biographie, type de compte), topics, messages avec images, système de tags pour catégoriser les sujets et système de votes sur les messages. La connexion s'effectue via un pool mysql2 dont les identifiants sont injectés par variables d'environnement, et les mots de passe sont hachés en SHA-512 avec le module crypto natif de Node.\n\nLe projet est en cours de développement : l'architecture, le serveur Express et le schéma de données sont en place, les fonctionnalités arrivent progressivement.",
+        features: [
+          "Architecture MVC frontend + backend",
+          "BDD modélisée : topics, messages, tags",
+          "Système de votes sur les messages",
+          "Profils utilisateurs enrichis",
+          "Pool de connexions MySQL + dotenv",
+          "Hachage des mots de passe (SHA-512)"
+        ],
+        technologies: ["JavaScript", "Node.js", "Express", "MySQL", "HTML/CSS"],
+        screenshot: null,
+        github: "https://github.com/Harld9/livrables_forum_groupe12",
+        demo: null,
+        doc: null
+      }
+    ];
+
+    /* ==============================================================
+       MOTEUR DE RENDU & EFFETS — pas besoin de modifier en dessous
+       ============================================================== */
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const canHover = window.matchMedia("(hover: hover)").matches;
+    const palette = ["#a78bfa", "#60a5fa", "#34d399", "#fbbf24", "#f87171", "#22d3ee"];
+
+    function esc(s) {
+      const div = document.createElement("div");
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    /* --- Preloader --- */
+    const preloader = document.getElementById("preloader");
+
+    function endPreloader() {
+      if (preloader.isConnected && !preloader.classList.contains("done")) {
+        preloader.classList.add("done");
+        document.body.classList.remove("loading");
+        setTimeout(() => preloader.remove(), 700);
+        startScramble();
+      }
+    }
+
+    if (reducedMotion) {
+      preloader.remove();
+      document.body.classList.remove("loading");
+    } else {
+      const fill = document.getElementById("loadFill");
+      const pctEl = document.getElementById("loadPct");
+      const t0 = performance.now();
+      const dur = 1300;
+      (function step(now) {
+        if (!preloader.isConnected || preloader.classList.contains("done")) return;
+        const p = Math.min(1, (now - t0) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const pct = Math.round(eased * 100);
+        pctEl.textContent = pct + "%";
+        fill.style.width = pct + "%";
+        if (p < 1) requestAnimationFrame(step);
+        else setTimeout(endPreloader, 250);
+      })(t0);
+      preloader.addEventListener("click", endPreloader);
+      setTimeout(endPreloader, 4000); // garde-fou
+    }
+
+    /* --- Effet de décodage sur le nom --- */
+    const scrambleEl = document.getElementById("scrambleName");
+    const scrambleFinal = scrambleEl.textContent;
+    let scrambleRunning = false;
+
+    function startScramble() {
+      if (reducedMotion || scrambleRunning) return;
+      scrambleRunning = true;
+      const chars = "!<>-_\\/[]{}—=+*^?#";
+      let frame = 0;
+      const total = scrambleFinal.length * 2 + 22;
+      (function tick() {
+        let out = "";
+        for (let i = 0; i < scrambleFinal.length; i++) {
+          out += (frame > i * 2 + 10) ? scrambleFinal[i] : chars[Math.floor(Math.random() * chars.length)];
+        }
+        scrambleEl.textContent = out;
+        if (++frame <= total) requestAnimationFrame(tick);
+        else { scrambleEl.textContent = scrambleFinal; scrambleRunning = false; }
+      })();
+    }
+
+    document.getElementById("heroName").addEventListener("mouseenter", startScramble);
+
+    /* --- Compétences : double marquee infini --- */
+    const skillsZone = document.getElementById("skillsZone");
+
+    function badgeHTML(skill, i) {
+      const color = palette[i % palette.length];
+      return '<span class="skill-badge" style="color:' + color +
+             ';background:' + color + '22;border-color:' + color + '55">' + esc(skill) + '</span>';
+    }
+
+    function buildMarquee(list, speed, reverse) {
+      const half = list.map(badgeHTML).join("").repeat(3);
+      const m = document.createElement("div");
+      m.className = "marquee";
+      m.innerHTML = '<div class="marquee-track' + (reverse ? " reverse" : "") +
+                    '" style="--speed:' + speed + 's">' + half + half + '</div>';
+      return m;
+    }
+
+    skillsZone.appendChild(buildMarquee(skills, 26, false));
+    skillsZone.appendChild(buildMarquee([...skills].reverse(), 34, true));
+
+    /* --- Projets : données visuelles --- */
+    const typeColors = {
+      "web":            ["#60a5fa", "rgba(59,130,246,0.14)"],
+      "infrastructure": ["#fbbf24", "rgba(245,158,11,0.14)"],
+      "réseau":         ["#34d399", "rgba(16,185,129,0.14)"],
+      "cybersécurité":  ["#f87171", "rgba(239,68,68,0.14)"],
+      "cloud":          ["#22d3ee", "rgba(6,182,212,0.14)"],
+      "script":         ["#a78bfa", "rgba(124,58,237,0.14)"]
+    };
+
+    const typeIcons = {
+      "infrastructure": '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="6" rx="1.5"/><rect x="3" y="15" width="18" height="6" rx="1.5"/><circle cx="7" cy="6" r="0.8" fill="currentColor"/><circle cx="7" cy="18" r="0.8" fill="currentColor"/><path d="M12 9v6"/></svg>',
+      "réseau": '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5v4M10.5 13.5l-4 3.5M13.5 13.5l4 3.5"/></svg>',
+      "cybersécurité": '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3.5v5c0 4.5-3.2 8-8 9.5-4.8-1.5-8-5-8-9.5v-5L12 3z"/><path d="M9.5 12l2 2 3.5-4"/></svg>',
+      "cloud": '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4.5 4.5 0 1 1 .8-8.9 6 6 0 0 1 11.4 1.9A3.5 3.5 0 0 1 18.5 18H7z"/></svg>',
+      "script": '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/></svg>',
+      "web": '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9s1-6.5 3.5-9z"/></svg>',
+      "boutique": '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 12.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3L5 8z"/><path d="M8.5 11V6.5a3.5 3.5 0 0 1 7 0V11"/></svg>',
+      "forum": '<svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h12a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3.5V15a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h-1z"/><path d="M18 9h2a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2v3l-3.5-3H13"/><path d="M8 9.5h6M8 12h4"/></svg>'
+    };
+
+    function visualHTML(p, cls) {
+      return p.screenshot
+        ? '<img class="' + cls + '" src="' + esc(p.screenshot) + '" alt="Capture d’écran : ' + esc(p.title) + '" loading="lazy">'
+        : '<div class="project-icon">' + (typeIcons[p.icon] || typeIcons[p.type] || typeIcons["web"]) + '</div>';
+    }
+
+    function typeBadgeHTML(p) {
+      const [c, bg] = typeColors[p.type] || typeColors["web"];
+      return '<span class="type-badge" style="color:' + c + ';background:' + bg + ';border-color:' + c + '55">' + esc(p.type) + '</span>';
+    }
+
+    /* --- Cartes projet --- */
+    const projectsGrid = document.getElementById("projectsGrid");
+    projects.forEach((p, i) => {
+      const tags = p.technologies.map(t => '<span class="tech-tag">' + esc(t) + '</span>').join("");
+
+      const card = document.createElement("article");
+      card.className = "project-card fade-in";
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-label", "Voir les détails du projet " + p.title);
+      card.style.setProperty("--stagger", (i * 0.1) + "s");
+      card.innerHTML =
+        visualHTML(p, "project-visual") +
+        '<div class="project-body">' +
+          '<div class="project-header">' +
+            '<h3 class="project-title">' + esc(p.title) + '</h3>' +
+            typeBadgeHTML(p) +
+          '</div>' +
+          '<p class="project-desc">' + esc(p.description) + '</p>' +
+          '<div class="tech-tags">' + tags + '</div>' +
+          '<span class="card-more">Voir les détails <span aria-hidden="true">→</span></span>' +
+        '</div>';
+
+      card.addEventListener("click", () => { location.hash = "projet-" + i; });
+      card.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); location.hash = "projet-" + i; }
+      });
+
+      // Effet tilt 3D au survol
+      if (!reducedMotion && canHover) {
+        card.addEventListener("mousemove", e => {
+          const r = card.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width - 0.5;
+          const y = (e.clientY - r.top) / r.height - 0.5;
+          card.style.transform = "rotateY(" + (x * 7) + "deg) rotateX(" + (-y * 7) + "deg) translateY(-4px)";
+        });
+        card.addEventListener("mouseleave", () => { card.style.transform = ""; });
+      }
+
+      projectsGrid.appendChild(card);
+    });
+
+    /* --- Page détail projet (routing par hash) --- */
+    const overlay = document.getElementById("detailOverlay");
+    const detailContent = document.getElementById("detailContent");
+    const detailClose = document.getElementById("detailClose");
+
+    function miniCardHTML(p, idx) {
+      const tags = p.technologies.slice(0, 3).map(t => '<span class="tech-tag">' + esc(t) + '</span>').join("") +
+        (p.technologies.length > 3 ? '<span class="tech-tag">+' + (p.technologies.length - 3) + '</span>' : "");
+      const visual = p.screenshot
+        ? '<img src="' + esc(p.screenshot) + '" alt="" loading="lazy">'
+        : '<div class="project-icon">' + (typeIcons[p.icon] || typeIcons[p.type] || typeIcons["web"]) + '</div>';
+      return '<div class="mini-card" data-project="' + idx + '" role="button" tabindex="0" aria-label="Voir le projet ' + esc(p.title) + '">' +
+        visual +
+        '<div class="mini-body">' +
+          '<div class="mini-date">' + esc(p.date) + '</div>' +
+          '<h4>' + esc(p.title) + '</h4>' +
+          '<p>' + esc(p.description) + '</p>' +
+          '<div class="mini-tags">' + tags + '</div>' +
+        '</div></div>';
+    }
+
+    function renderDetail(i) {
+      const p = projects[i];
+      const paragraphs = p.longDescription.split(/\n\s*\n/).map(par => "<p>" + esc(par) + "</p>").join("");
+      const tags = p.technologies.map(t => '<span class="tech-tag">' + esc(t) + '</span>').join("");
+      const feats = p.features.map(f => "<li>" + esc(f) + "</li>").join("");
+
+      const actions =
+        (p.github ? '<a class="btn btn-primary" href="' + esc(p.github) + '" target="_blank" rel="noopener">⌥ Voir le code</a>' : "") +
+        (p.demo ? '<a class="btn btn-outline" href="' + esc(p.demo) + '" target="_blank" rel="noopener">↗ Voir la démo</a>' : "");
+
+      const similar = projects
+        .map((sp, idx) => ({ sp, idx }))
+        .filter(o => o.idx !== i)
+        .slice(0, 3)
+        .map(o => miniCardHTML(o.sp, o.idx))
+        .join("");
+
+      detailContent.innerHTML =
+        '<div class="breadcrumb">' +
+          '<a href="#accueil">Accueil</a><span class="sep">/</span>' +
+          '<a href="#projets">Projets</a><span class="sep">/</span>' +
+          '<span class="current">' + esc(p.title) + '</span>' +
+        '</div>' +
+        '<div class="detail-banner">' + visualHTML(p, "") + '</div>' +
+        '<div class="detail-head">' +
+          '<h2>' + esc(p.title) + '</h2>' +
+          '<div class="detail-meta">' + typeBadgeHTML(p) + '<span class="date-chip">📅 ' + esc(p.date) + '</span></div>' +
+        '</div>' +
+        (actions ? '<div class="detail-actions">' + actions + '</div>' : '<div style="margin-bottom:34px"></div>') +
+        '<div class="detail-section"><h3>Description</h3>' + paragraphs + '</div>' +
+        '<div class="detail-section"><h3>Technologies</h3><div class="tech-tags">' + tags + '</div></div>' +
+        (p.features.length ? '<div class="detail-section"><h3>Fonctionnalités</h3><ul class="features-list">' + feats + '</ul></div>' : "") +
+        (p.doc ? '<div class="detail-section"><h3>Documentation</h3><p>📄 ' + esc(p.doc) + '</p></div>' : "") +
+        (similar ? '<div class="detail-section"><h3>Projets similaires</h3><p style="margin-top:-6px">Ça pourrait aussi te plaire :</p><div class="similar-grid">' + similar + '</div></div>' : "");
+
+      overlay.scrollTop = 0;
+    }
+
+    function showDetail(i) {
+      renderDetail(i);
+      if (overlay.hidden) {
+        overlay.hidden = false;
+        document.body.classList.add("no-scroll");
+        requestAnimationFrame(() => overlay.classList.add("open"));
+      } else {
+        // déjà ouvert (navigation entre projets similaires) : relance l'animation
+        overlay.classList.remove("open");
+        requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add("open")));
+      }
+      detailClose.focus({ preventScroll: true });
+    }
+
+    function hideDetail() {
+      if (overlay.hidden) return;
+      overlay.classList.remove("open");
+      document.body.classList.remove("no-scroll");
+      setTimeout(() => { overlay.hidden = true; }, 300);
+    }
+
+    function syncDetail() {
+      const m = location.hash.match(/^#projet-(\d+)$/);
+      if (m && projects[+m[1]]) showDetail(+m[1]);
+      else hideDetail();
+    }
+
+    window.addEventListener("hashchange", syncDetail);
+    syncDetail(); // si on arrive directement avec #projet-N dans l'URL
+
+    detailClose.addEventListener("click", () => { location.hash = "projets"; });
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape" && !overlay.hidden) location.hash = "projets";
+    });
+
+    // Clic sur un projet similaire dans la page détail
+    overlay.addEventListener("click", e => {
+      const mini = e.target.closest("[data-project]");
+      if (mini) location.hash = "projet-" + mini.dataset.project;
+    });
+    overlay.addEventListener("keydown", e => {
+      const mini = e.target.closest("[data-project]");
+      if (mini && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        location.hash = "projet-" + mini.dataset.project;
+      }
+    });
+
+    /* --- Machine à écrire du hero --- */
+    const typedEl = document.getElementById("typedText");
+    if (reducedMotion) {
+      typedEl.textContent = heroTitles[0];
+    } else {
+      let titleIdx = 0, charIdx = 0, deleting = false;
+      (function typeLoop() {
+        const current = heroTitles[titleIdx];
+        typedEl.textContent = current.slice(0, charIdx);
+        let delay = deleting ? 28 : 55;
+        if (!deleting && charIdx === current.length) { delay = 2200; deleting = true; }
+        else if (deleting && charIdx === 0) {
+          deleting = false;
+          titleIdx = (titleIdx + 1) % heroTitles.length;
+          delay = 350;
+        }
+        charIdx += deleting ? -1 : 1;
+        setTimeout(typeLoop, delay);
+      })();
+    }
+
+    /* --- Fond : réseau de particules réactif à la souris --- */
+    const canvas = document.getElementById("particles");
+    const mouse = { x: -9999, y: -9999 };
+
+    if (!reducedMotion) {
+      const ctx = canvas.getContext("2d");
+      let particles = [];
+
+      function initParticles() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const count = Math.min(70, Math.floor(canvas.width / 22));
+        particles = Array.from({ length: count }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: (Math.random() - 0.5) * 0.35,
+          r: Math.random() * 1.6 + 0.6
+        }));
+      }
+
+      function drawParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (const p of particles) {
+          const mdx = p.x - mouse.x, mdy = p.y - mouse.y;
+          const mdist = Math.hypot(mdx, mdy);
+          if (mdist < 110 && mdist > 0) {
+            p.x += (mdx / mdist) * 0.9;
+            p.y += (mdy / mdist) * 0.9;
+          }
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+          if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(167, 139, 250, 0.5)";
+          ctx.fill();
+        }
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 130) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = "rgba(124, 58, 237," + (0.16 * (1 - dist / 130)) + ")";
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+          }
+          const dxm = particles[i].x - mouse.x;
+          const dym = particles[i].y - mouse.y;
+          const dm = Math.hypot(dxm, dym);
+          if (dm < 160) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = "rgba(217, 70, 239," + (0.22 * (1 - dm / 160)) + ")";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+        requestAnimationFrame(drawParticles);
+      }
+
+      initParticles();
+      drawParticles();
+      window.addEventListener("resize", initParticles);
+    }
+
+    /* --- Curseur custom (point + anneau) + halo --- */
+    const glow = document.getElementById("cursorGlow");
+    const dot = document.getElementById("cursorDot");
+    const ring = document.getElementById("cursorRing");
+
+    if (!reducedMotion && canHover) {
+      document.body.classList.add("custom-cursor");
+      let gx = -999, gy = -999, rx = -999, ry = -999, tx = -999, ty = -999;
+
+      document.addEventListener("mousemove", e => {
+        tx = e.clientX; ty = e.clientY;
+        mouse.x = tx; mouse.y = ty;
+        glow.style.opacity = "1";
+        dot.classList.remove("hidden");
+        ring.classList.remove("hidden");
+        dot.style.left = tx + "px";
+        dot.style.top = ty + "px";
+        const hovering = e.target.closest("a, button, .skill-badge, .project-card, .mini-card");
+        ring.classList.toggle("hovering", !!hovering);
+      });
+
+      document.addEventListener("mouseleave", () => {
+        dot.classList.add("hidden");
+        ring.classList.add("hidden");
+        mouse.x = -9999; mouse.y = -9999;
+      });
+
+      (function followLoop() {
+        gx += (tx - gx) * 0.12;  gy += (ty - gy) * 0.12;
+        rx += (tx - rx) * 0.22;  ry += (ty - ry) * 0.22;
+        glow.style.left = gx + "px";
+        glow.style.top = gy + "px";
+        ring.style.left = rx + "px";
+        ring.style.top = ry + "px";
+        requestAnimationFrame(followLoop);
+      })();
+    }
+
+    /* --- Boutons magnétiques --- */
+    if (!reducedMotion && canHover) {
+      document.querySelectorAll(".magnetic").forEach(el => {
+        el.addEventListener("mousemove", e => {
+          const r = el.getBoundingClientRect();
+          const dx = (e.clientX - (r.left + r.width / 2)) * 0.28;
+          const dy = (e.clientY - (r.top + r.height / 2)) * 0.28;
+          el.style.transform = "translate(" + dx + "px," + dy + "px)";
+        });
+        el.addEventListener("mouseleave", () => { el.style.transform = ""; });
+      });
+    }
+
+    /* --- Étincelles au clic --- */
+    function burst(x, y, count, big) {
+      if (reducedMotion) return;
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement("div");
+        s.className = "spark";
+        const color = palette[Math.floor(Math.random() * palette.length)];
+        s.style.background = color;
+        s.style.boxShadow = "0 0 8px " + color;
+        s.style.left = x + "px";
+        s.style.top = y + "px";
+        document.body.appendChild(s);
+        const angle = Math.random() * Math.PI * 2;
+        const dist = (big ? 140 : 60) + Math.random() * (big ? 220 : 60);
+        s.animate([
+          { transform: "translate(-50%,-50%) scale(1)", opacity: 1 },
+          { transform: "translate(calc(-50% + " + (Math.cos(angle) * dist) + "px), calc(-50% + " + (Math.sin(angle) * dist + (big ? 120 : 0)) + "px)) scale(0)", opacity: 0 }
+        ], { duration: big ? 1100 : 650, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }).onfinish = () => s.remove();
+      }
+    }
+
+    document.addEventListener("click", e => burst(e.clientX, e.clientY, 10, false));
+
+    /* --- Easter egg : code Konami → mode fête --- */
+    const konami = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
+    let kIdx = 0;
+    document.addEventListener("keydown", e => {
+      kIdx = (e.key === konami[kIdx]) ? kIdx + 1 : (e.key === konami[0] ? 1 : 0);
+      if (kIdx === konami.length) {
+        kIdx = 0;
+        document.body.classList.toggle("party");
+        burst(window.innerWidth / 2, window.innerHeight / 3, 90, true);
+        console.log("%c🎉 MODE FÊTE " + (document.body.classList.contains("party") ? "ACTIVÉ" : "DÉSACTIVÉ"), "color:#d946ef;font-size:16px;font-weight:bold;");
+      }
+    });
+
+    /* --- Barre de progression + nav + bouton retour en haut --- */
+    const progressBar = document.getElementById("scrollProgress");
+    const navbar = document.getElementById("navbar");
+    const backToTop = document.getElementById("backToTop");
+
+    window.addEventListener("scroll", () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + "%";
+      navbar.classList.toggle("scrolled", window.scrollY > 30);
+      backToTop.classList.toggle("show", window.scrollY > 600);
+    }, { passive: true });
+
+    backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" }));
+
+    /* --- Lien actif dans la nav selon la section visible --- */
+    const navAnchors = document.querySelectorAll(".nav-links a");
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navAnchors.forEach(a =>
+            a.classList.toggle("active", a.getAttribute("href") === "#" + entry.target.id)
+          );
+        }
+      });
+    }, { rootMargin: "-40% 0px -55% 0px" });
+
+    document.querySelectorAll("section[id], header[id]").forEach(s => sectionObserver.observe(s));
+
+    /* --- Menu mobile --- */
+    const burger = document.getElementById("navBurger");
+    const navLinks = document.getElementById("navLinks");
+    burger.addEventListener("click", () => navLinks.classList.toggle("open"));
+    navLinks.querySelectorAll("a").forEach(a =>
+      a.addEventListener("click", () => navLinks.classList.remove("open"))
+    );
+
+    /* --- Copie de l'email au clic --- */
+    const emailBtn = document.getElementById("emailBtn");
+    emailBtn.addEventListener("click", () => {
+      const email = emailBtn.dataset.email;
+      const original = emailBtn.textContent;
+      const done = () => {
+        emailBtn.textContent = "✓ Email copié !";
+        setTimeout(() => { emailBtn.textContent = original; }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(done).catch(() => { location.href = "mailto:" + email; });
+      } else {
+        location.href = "mailto:" + email;
+      }
+    });
+
+    /* --- Animations fade-in au scroll --- */
+    const fadeObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          fadeObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll(".fade-in").forEach(el => fadeObserver.observe(el));
+
+    /* --- Année du footer --- */
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    /* --- Petit clin d'œil pour les curieux --- */
+    console.log("%c👋 Salut, curieux·se ! Ce portfolio est 100% vanilla — pas de framework, que du fait maison.", "color:#a78bfa;font-size:14px;font-weight:bold;");
+    console.log("%cEssaie le code Konami : ↑ ↑ ↓ ↓ ← → ← → B A 😉", "color:#d946ef;font-size:12px;");
+  </script>
+</body>
+</html>
